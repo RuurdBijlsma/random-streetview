@@ -1,6 +1,7 @@
 # random-streetview
-
 Generate a random valid (on a road with StreetView or PhotoSphere) StreetView location in a given polygon. Used in https://locationestimatr.web.app.
+
+**Browser only**
 
 ## Usage
 #### Getting 3 random locations on anywhere on earth
