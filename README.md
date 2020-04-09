@@ -1,25 +1,28 @@
 # random-streetview
 
-Generate a random valid (on a road with StreetView or PhotoSphere) StreetView location in a given polygon.
+Generate a random valid (on a road with StreetView or PhotoSphere) StreetView location in a given polygon. Used in https://locationestimatr.web.app.
 
 ## Usage
-Getting 3 random locations on anywhere on earth:
+#### Getting 3 random locations on anywhere on earth
 ```javascript
 import randomStreetView from 'random-streetview';
-randomStreetView.setParameters({
-    polygon: false,
-    enableCaching: true,
-    endZoom: 14,
-    cacheKey: false,
-    type: 'sv',
-    distribution: 'weighted',
-    google: false,
-});
 const locations = await randomStreetView.getRandomLocations(3);
 // example locations contents: 
 // [[9.096418449685814, -2.484712600708008],
 // [66.93355785447132, 21.258974075317383],
 // [11.362409446559152, 76.77838325500488]]
+```
+#### Get random PhotoSphere in Cyprus
+```javascript
+import randomStreetView from 'random-streetview';
+await randomStreetView.setParameters({
+    //Polygon contains Cyprus:
+    polygon: [[[36.050655, 35.047808], [33.588766, 34.364699], [35.235311, 30.703665]]],
+    type: 'photo',
+});
+let location = await randomStreetView.getRandomLocation();
+// example locations contents: 
+// [34.956658755288984, 32.30649948120117]
 ```
 
 ## Documentation
@@ -37,7 +40,7 @@ These are 4 points describing one area containing the Benelux. A polygon can con
 Whether to use localStorage caching for getting StreetView coverage of the tile.
 
 #### `endZoom` (Integer) default: 14
-At what zoom level should the algorithm try to find a valid road/PhotoSphere. Zoom levels can be visualized here: https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/.
+At what zoom level should the algorithm try to find a valid road/PhotoSphere. Zoom levels can be visualized here: https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/. Should be between 12 and 22, however 12 is probably too low, and 22 is overkill. A small polygon can benefit from a zoom level of 18 to prevent locations being picked just outside of the polygon. 
 
 #### `cacheKey` (String|false) default: false
 When enableCaching is true, and the list of coordinates is large, it's a good idea to set this parameter. This will determine what key should be used in the cache for the given polygon, a different polygon should have a different key. When no cache key is given one will be generated from the coordinates.
