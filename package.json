@@ -1,0 +1,28 @@
+{
+  "name": "random-streetview",
+  "version": "1.0.0",
+  "description": "Finds a random valid StreetView location in a given polygon.",
+  "main": "src/index.mjs",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruurdbijlsma/random-streetview.git"
+  },
+  "keywords": [
+    "random",
+    "streetview",
+    "location",
+    "google",
+    "polygon"
+  ],
+  "author": "Ruurd Bijlsma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ruurdbijlsma/random-streetview/issues"
+  },
+  "homepage": "https://github.com/ruurdbijlsma/random-streetview#readme",
+  "dependencies": {
+    "load-google-maps-api": "^2.0.2"
+  }
+}
