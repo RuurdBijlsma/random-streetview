@@ -72,14 +72,14 @@ async setParameters({
 })
 ```
 Sets parameters listed above. It's not needed to call this before calling getRandomLocation. Returns Promise.
-#### `async getRandomLocation()` : [lat (Number), lng (Number)]
-Returns a Promise with a random location given the parameters. If setParameters hasn't been called it returns a random location on earth.
-#### `async getRandomLocations(nLocations, onLocationCallback)` : [[lat (Number), lng (Number)]]
+#### `async getRandomLocation()` : [lat (Number), lng (Number) | false]
+Returns a Promise with a random location given the parameters. If setParameters hasn't been called it returns a random location on earth. If no valid location could be found in the polygon provided, it will return false.
+#### `async getRandomLocations(nLocations, onLocationCallback)` : [[lat (Number), lng (Number)]|false]
 `nLocations`: Amount of locations to find
 
 `onLocationCallback`: Gets called for every location that's found, can be useful for when not all locations are needed at once.
 
-Returns a Promise with the given amount of locations in an array.
+Returns a Promise with the given amount of locations in an array. If no valid location could be found in the polygon provided, it will return an array of false.
 
 #### `setHighCpuUsage()` : void
 Sets normal operating mode, can cause some lag on slower devices when other CPU intensive ui tasks are being performed.

@@ -87,6 +87,8 @@ class RandomStreetView extends EventEmitter {
             distribution: this.distribution,
             type: this.type
         });
+        if (location === false)
+            return false;
         return [location.lat(), location.lng()];
     }
 }

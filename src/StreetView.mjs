@@ -105,7 +105,7 @@ export default class StreetView extends EventEmitter {
                 tile.zoom <= photoSphereZoomLevel && tile.types.sv)
             .filter(tile => this.tileIntersectsMap(tile.x, tile.y, tile.zoom));
 
-        if (chosenTile.zoom === startZoom && validTiles.length === 0) {
+        if (chosenTile.zoom === startZoom && validTiles.length === 0 && chosenTile.zoom <= 7) {
             //OH OH SPAGHETTIOS
             //Can't find anything in the start tile, trying to go ahead by ignoring street view coverage
             validTiles = subTiles
@@ -125,7 +125,7 @@ export default class StreetView extends EventEmitter {
         for (let tile of shuffledTiles) {
             let subTile = await this.randomValidTile(endZoom, type, tile, startZoom);
 
-            if (subTile !== false)
+            if (subTile !== false && (subTile.types.sv || subTile.types.photo))
                 return subTile;
         }
         console.log("Back tracking");
