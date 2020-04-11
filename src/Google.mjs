@@ -20,7 +20,6 @@ class Google extends EventEmitter {
         }).then(googleMaps => {
             this.maps = googleMaps;
             this.emit('maps');
-            console.log(this.maps);
         });
     }
 

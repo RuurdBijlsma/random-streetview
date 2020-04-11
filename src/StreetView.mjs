@@ -94,7 +94,6 @@ export default class StreetView extends EventEmitter {
         const photoSphereZoomLevel = 12;
 
         let subTiles = await this.getSubTiles(chosenTile.x, chosenTile.y, chosenTile.zoom);
-        // console.log("TYPE", type, "DISTRIBUTION", this.distribution);
 
         let validTiles = subTiles
             .filter(tile =>
@@ -128,7 +127,7 @@ export default class StreetView extends EventEmitter {
             if (subTile !== false && (subTile.types.sv || subTile.types.photo))
                 return subTile;
         }
-        console.log("Back tracking");
+        // console.log("Back tracking");
         return false;
     }
 
