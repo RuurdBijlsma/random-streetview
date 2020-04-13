@@ -111,10 +111,12 @@ export default class StreetView extends EventEmitter {
                 .filter(tile => this.tileIntersectsMap(tile.x, tile.y, tile.zoom));
             startZoom = validTiles[0].zoom;
         }
-        this.emit('tiles', subTiles.map(tile => ({
+        let tilesInfo = subTiles.map(tile => ({
             ...tile,
             valid: validTiles.includes(tile),
-        })));
+        }));
+        this.emit('tiles', tilesInfo);
+        // console.log(tilesInfo)
 
         let shuffleFun = this.distribution === 'uniform' ?
             array => this.shuffle(array) :
@@ -321,6 +323,12 @@ export default class StreetView extends EventEmitter {
         let isFullyContained = this.polygon !== false && this.isTileFullyContainedInMap(tileX, tileY, zoom);
 
         let chunkSize = 16;
+        if (zoom <= 2)//0, 1, 2
+            chunkSize = 4;
+        else if (zoom === 3)//3
+            chunkSize = 4;
+        else if (zoom <= 5)
+            chunkSize = 8;
         let pixelChunkSize;
         if (zoom <= 6)
             pixelChunkSize = 16;
@@ -332,6 +340,7 @@ export default class StreetView extends EventEmitter {
             pixelChunkSize = 4;
         else
             pixelChunkSize = 2;
+        pixelChunkSize = Math.min(pixelChunkSize, chunkSize);
 
         for (let y = 0; y < img.height; y += chunkSize) {
             for (let x = 0; x < img.width; x += chunkSize) {
