@@ -353,7 +353,7 @@ export default class StreetView extends EventEmitter {
         else
             pixelChunkSize = 2;
         pixelChunkSize = Math.min(pixelChunkSize, chunkSize);
-        console.log("Using", {chunkSize, pixelChunkSize, zoom, img})
+        // console.log("Using", {chunkSize, pixelChunkSize, zoom, img})
 
         for (let y = 0; y < img.height; y += chunkSize) {
             for (let x = 0; x < img.width; x += chunkSize) {
