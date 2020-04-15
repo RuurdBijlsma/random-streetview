@@ -16,6 +16,7 @@ export default class StreetView extends EventEmitter {
         this.cacheKey = 'rsv__world';
         this.polygon = false;
         this.google = false;
+        this.area = 1;
         this.smallestContainingTile = {x: 0, y: 0, zoom: 0};
 
         this.typeColors = [
@@ -30,6 +31,11 @@ export default class StreetView extends EventEmitter {
         this.enableCaching = enableCaching;
         this.smallestContainingTile = this.polygonToSmallestContainingTile(polygon);
         this.polygon = polygon;
+        let area = 0;
+        polygon.getPaths().forEach(path => {
+            area += this.google.maps.geometry.spherical.computeArea(path);
+        });
+        this.area = area;
     }
 
     async randomValidLocation({
@@ -322,12 +328,18 @@ export default class StreetView extends EventEmitter {
         let coverage = [0, 0];
         let isFullyContained = this.polygon !== false && this.isTileFullyContainedInMap(tileX, tileY, zoom);
 
+        //asia area:       87,868,883,173,444
+        //spain area:         680,475,474,716
+        //EU area:         12,047,591,207,736
+        //russia area:     16,934,010,870,404
+        let massiveArea = 5000000000000;
+        let bigArea = 1000000000000;
         let chunkSize = 16;
-        if (zoom <= 2)//0, 1, 2
+        if (zoom <= 2 && this.area < massiveArea)//0, 1, 2
             chunkSize = 4;
-        else if (zoom === 3)//3
+        else if (zoom <= 4 && this.area < massiveArea)//3
             chunkSize = 4;
-        else if (zoom <= 5)
+        else if (zoom <= 7 && this.area < bigArea)
             chunkSize = 8;
         let pixelChunkSize;
         if (zoom <= 6)
@@ -341,6 +353,7 @@ export default class StreetView extends EventEmitter {
         else
             pixelChunkSize = 2;
         pixelChunkSize = Math.min(pixelChunkSize, chunkSize);
+        console.log("Using", {chunkSize, pixelChunkSize, zoom, img})
 
         for (let y = 0; y < img.height; y += chunkSize) {
             for (let x = 0; x < img.width; x += chunkSize) {
