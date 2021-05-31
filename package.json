@@ -1,6 +1,6 @@
 {
   "name": "random-streetview",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Finds a random valid StreetView location in a given polygon.",
   "main": "src/index.mjs",
   "scripts": {
