@@ -1,5 +1,5 @@
 import StreetView from "./StreetView";
-import Google from "./Google";
+import Google from "./Google.js";
 import EventEmitter from 'events';
 
 class RandomStreetView extends EventEmitter {
@@ -55,6 +55,7 @@ class RandomStreetView extends EventEmitter {
             });
         }
         if (!cacheKey && enableCaching && polygon) {
+            console.log(polygon)
             cacheKey = '';
             polygon.getPaths().forEach(p => p.forEach(c => cacheKey += c.lat().toString() + c.lng()));
         }

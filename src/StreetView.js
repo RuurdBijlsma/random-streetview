@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import Google from "./Google";
+import Google from "./Google.js";
 
 export default class StreetView extends EventEmitter {
     constructor() {
@@ -21,6 +21,7 @@ export default class StreetView extends EventEmitter {
 
         this.typeColors = [
             {color: [84, 160, 185], id: 'sv'},
+            {color: [18, 158, 175], id: 'sv'},
             {color: [165, 224, 250, 102], id: 'photo'},
         ];
     }
@@ -32,14 +33,15 @@ export default class StreetView extends EventEmitter {
         this.smallestContainingTile = this.polygonToSmallestContainingTile(polygon);
         this.polygon = polygon;
         let area = 0;
-        polygon.getPaths().forEach(path => {
-            area += this.google.maps.geometry.spherical.computeArea(path);
-        });
+        if (polygon)
+            polygon.getPaths().forEach(path => {
+                area += this.google.maps.geometry.spherical.computeArea(path);
+            });
         this.area = area;
     }
 
     async randomValidLocation({
-                                  endZoom = 14,
+                                  endZoom = 13,
                                   type = 'sv',
                                   distribution = 'weighted'
                               }) {
@@ -110,6 +112,7 @@ export default class StreetView extends EventEmitter {
                 tile.zoom <= photoSphereZoomLevel && tile.types.sv)
             .filter(tile => this.tileIntersectsMap(tile.x, tile.y, tile.zoom));
 
+
         if (chosenTile.zoom === startZoom && validTiles.length === 0 && chosenTile.zoom <= 7) {
             //OH OH SPAGHETTIOS
             //Can't find anything in the start tile, trying to go ahead by ignoring street view coverage
@@ -122,7 +125,6 @@ export default class StreetView extends EventEmitter {
             valid: validTiles.includes(tile),
         }));
         this.emit('tiles', tilesInfo);
-        // console.log(tilesInfo)
 
         let shuffleFun = this.distribution === 'uniform' ?
             array => this.shuffle(array) :
@@ -135,7 +137,6 @@ export default class StreetView extends EventEmitter {
             if (subTile !== false && (subTile.types.sv || subTile.types.photo))
                 return subTile;
         }
-        // console.log("Back tracking");
         return false;
     }
 
@@ -262,15 +263,14 @@ export default class StreetView extends EventEmitter {
 
     async getTileImage(x, y, zoom) {
         return new Promise(async resolve => {
-            let response = await fetch(this.getUrl(x, y, zoom));
+            const url = this.getUrl(x, y, zoom);
+            // console.log(x, y, zoom, url);
+            let response = await fetch(url);
             let blob = await response.blob();
-            const reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onload = e => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => resolve(img);
-            }
+            const img = new Image();
+            // document.querySelector('.temp').prepend(img);
+            img.src = URL.createObjectURL(blob);
+            img.onload = () => resolve(img);
         });
     }
 
@@ -328,12 +328,12 @@ export default class StreetView extends EventEmitter {
         let coverage = [0, 0];
         let isFullyContained = this.polygon !== false && this.isTileFullyContainedInMap(tileX, tileY, zoom);
 
-        //asia area:       87,868,883,173,444
-        //spain area:         680,475,474,716
-        //EU area:         12,047,591,207,736
-        //russia area:     16,934,010,870,404
-        let massiveArea = 5000000000000;
-        let bigArea = 1000000000000;
+        //asia area:           87868883173444
+        //spain area:          680475474716
+        //EU area:             12047591207736
+        //russia area:         16934010870404
+        let massiveArea = /**/ 5000000000000;
+        let bigArea = /*    */ 1000000000000;
         let chunkSize = 16;
         if (zoom <= 2 && this.area < massiveArea)//0, 1, 2
             chunkSize = 4;
